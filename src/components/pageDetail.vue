@@ -7,8 +7,25 @@
   const WORDPRESS_BASE_API_URL = 'http://localhost:8888/cms-api-test/wp-json/wp/v2/';
 
   const postContent = ref(null);
+  const featuredImage = ref(null);
   const loading = ref(true);
   const error = ref(null);
+
+  const fetchFeaturedImage = async (mediaLink) => {
+    try {
+      if (mediaLink) {
+        const res = await axios.get(mediaLink);
+        // scelta dimensione immagine:
+        featuredImage.value = res.data.media_details?.sizes?.large?.source_url
+          || res.data.media_details?.sizes?.medium?.source_url
+          || res.data.source_url; // fallback all'originale
+      } else {
+        featuredImage.value = null;
+      }
+    } catch (e) {
+      featuredImage.value = null;
+    }
+  };
 
   const fetchContentBySlug = async (slug) => {
 
@@ -50,6 +67,12 @@
             error.value = 'Contenuto non trovato per questo slug nelle pagine o negli articoli.';
             console.warn("fetchContentBySlug: Nessun contenuto trovato per lo slug:", slug); 
           }
+      }
+
+      // Recupera immagine in evidenza se presente
+      if (postContent.value && postContent.value._links && postContent.value._links["wp:featuredmedia"]) {
+        const mediaLink = postContent.value._links["wp:featuredmedia"][0].href;
+        await fetchFeaturedImage(mediaLink);
       }
       // segnala errore se non trovato
       if (!contentFound) {
@@ -95,6 +118,8 @@
       <h2 class="text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
         {{ postContent.title?.rendered }}
       </h2>
+
+      <img v-if="featuredImage" :src="featuredImage" :alt="postContent.title?.rendered" class="mb-4" />
 
       <div class="prose lg:prose-xl max-w-none" v-html="postContent.content?.rendered"></div>
 

@@ -89,27 +89,26 @@ onMounted(async () => {
 
 <template>
   <header class="bg-gray-800 text-white p-4 flex items-center justify-between w-full">
-    <div class="flex items-center">
+    <router-link to="/" class="flex items-center">
       <h1 class="text-2xl font-bold mr-4">Header</h1>
-      </div>
+    </router-link>
 
     <nav class="flex items-center space-x-4">
-      <router-link to="/" class="text-gray-300 hover:text-white transition-colors duration-200 text-lg">
-        Home
-      </router-link>
-
-      <span v-if="menuItems.length > 0 || loadingMenu || errorMenu" class="text-gray-500 text-lg"> | </span>
 
       <span v-if="loadingMenu" class="text-gray-400">Caricamento menu...</span>
       <span v-else-if="errorMenu" class="text-red-400">Errore menu: {{ errorMenu }}</span>
+
       <template v-else>
+
         <template v-for="(item, index) in menuItems" :key="item.id">
           <router-link :to="item.url" class="text-gray-300 hover:text-white transition-colors duration-200 text-lg">
             {{ item.title }}
           </router-link>
           <span v-if="index < menuItems.length - 1" class="text-gray-500"> | </span>
+        
         </template>
       </template>
+
     </nav>
   </header>
 </template>

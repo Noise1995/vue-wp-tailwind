@@ -63,11 +63,13 @@
     <div v-else-if="error" class="text-center text-red-600 text-lg">Errore: {{ error }}</div>
 
     <div v-else-if="article">
-      <buttons :buttons="backButton" class="mb-6" /> 
+      <buttons :buttons="backButton" buttonExtraClass="cursor-pointer" class="mb-6" /> 
 
       <h2 class="text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
         {{ article.title }}
       </h2>
+
+      <img :src="article.cover_image" :alt="article.title" class="mb-4">
 
       <div class="prose lg:prose-xl max-w-none" v-html="article.body_html"></div>
       
