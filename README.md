@@ -17,7 +17,6 @@
 - [Stili e UI](#stili-e-ui)
 - [Avvio e build del progetto](#avvio-e-build-del-progetto)
 - [Personalizzazione e best practice](#personalizzazione-e-best-practice)
-- [Possibili estensioni](#possibili-estensioni)
 
 ---
 
@@ -121,7 +120,6 @@ root/
 - **Ruolo:** Card per singolo articolo.
 - **Funzionalità:**
     - Visualizza titolo, descrizione, pulsante per leggere il dettaglio.
-    - (Possibile estensione: mostrare immagine di copertina, autore, data).
 
 
 ### 6. **ArticleDetail.vue**
@@ -260,15 +258,6 @@ Dal tuo `package.json`:
 
 ---
 
-## Possibili Estensioni
-
-- **Commenti WordPress**: aggiungi una sezione commenti nei dettagli articolo.
-- **Ricerca articoli**: implementa una barra di ricerca.
-- **Categorie e tag**: filtra articoli per categoria/tag.
-- **Autenticazione**: permetti la gestione di contenuti agli utenti autenticati.
-- **Scroll infinito**: per la lista articoli.
-- **Dark mode**: facilmente integrabile con Tailwind.
-
 ---
 
 ## Note Finali
@@ -279,9 +268,7 @@ Dal tuo `package.json`:
 
 ---
 
-**Hai bisogno di esempi di codice, snippet di configurazione, o vuoi approfondire una sezione specifica? Chiedimi pure!**
-
-# Analisi Blocco per Blocco del Progetto Vue.js + WordPress
+# Analisi Blocchi del Progetto
 
 
 ---
@@ -517,13 +504,5 @@ Dal tuo `package.json`:
 - `npm install` per installare le dipendenze.
 - `npm run dev` per avviare il server di sviluppo.
 - `npm run build` per la build di produzione.
-
----
-
-## 13. **Best practice e possibilità di estensione**
-
-- Gestione robusta di errori e loading.
-- Separazione tra presentazione e logica.
-- Possibilità di aggiungere funzionalità: commenti, ricerca, categorie, autenticazione, dark mode, ecc.
 
 ---
