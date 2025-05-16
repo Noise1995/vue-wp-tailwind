@@ -1,12 +1,6 @@
 # test-vue-dep
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-*Documentazione completa** del progetto Vue.js + Tailwind CSS con backend WordPress
 
 ---
 
@@ -34,6 +28,12 @@ L’obiettivo è fornire una piattaforma blog moderna, veloce e responsive, con 
 
 ---
 
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+---
+
 ## Stack tecnologico
 
 - **Frontend**
@@ -50,29 +50,36 @@ L’obiettivo è fornire una piattaforma blog moderna, veloce e responsive, con 
 ## Struttura del Progetto
 
 ```
-src/
-├── App.vue
-├── components/
-│   ├── Header.vue
-│   ├── Footer.vue
-│   ├── ArticleList.vue
-│   ├── ArticleCard.vue
-│   ├── ArticleDetail.vue
-│   ├── PageDetail.vue
-│   └── Buttons.vue
-├── router/
-│   └── index.js
-├── assets/
-│   └── images/
-│       └── default-image.jpg
-├── main.js
-public/
-└── images/
-    └── default-image.jpg
-tailwind.config.js
-vite.config.js
-package.json
-```
+
+root/
+├── dist/
+│   └── assets/
+│       ├── index.js
+│       └── indexs.css
+├── favicon.ico
+├── index.html
+├── node_modules/
+├── public/
+│   └── favicon.ico
+├── src/
+│   ├── assets/
+│   │   ├── logo.svg
+│   │   └── styles.css
+│   ├── components/
+│   │   ├── articleCard.vue
+│   │   ├── articleDetail.vue
+│   │   ├── articleList.vue
+│   │   ├── buttons.vue
+│   │   ├── footer.vue
+│   │   ├── header.vue
+│   │   └── pageDetail.vue
+│   ├── App.vue
+│   ├── main.js
+│   └── router.js
+├── package.json
+├── tailwind.config.js
+├── vite.config.js
+└── jsconfig.json
 
 
 ---
@@ -520,6 +527,3 @@ Dal tuo `package.json`:
 - Possibilità di aggiungere funzionalità: commenti, ricerca, categorie, autenticazione, dark mode, ecc.
 
 ---
-
-**Hai bisogno di approfondire la logica di un blocco specifico, vedere esempi di codice, o vuoi suggerimenti per nuove funzionalità? Chiedimi pure!**
-
