@@ -10,6 +10,7 @@
   const featuredImage = ref(null);
   const loading = ref(true);
   const error = ref(null);
+  const extraFields = ref(null);
 
   const fetchFeaturedImage = async (mediaLink) => {
     try {
@@ -32,6 +33,7 @@
     loading.value = true;
     error.value = null;
     postContent.value = null; 
+    extraFields.value = null; // acf
 
     if (!slug) {
       console.warn("fetchContentBySlug: Lo slug è nullo o indefinito. Non è possibile recuperare il contenuto.");
@@ -46,11 +48,17 @@
 
       // Recupera come pagina
       try {
-        response = await axios.get(`${WORDPRESS_BASE_API_URL}pages?slug=${slug}`);
+        response = await axios.get(`${WORDPRESS_BASE_API_URL}pages?slug=${slug}&acf_format=standard`); // '&acf_format=standard'se presenti campi acf
         if (response && response.data.length > 0) {
           postContent.value = response.data[0];
           console.log("fetchContentBySlug: Contenuto trovato come pagina. Titolo:", postContent.value.title?.rendered); // Utile per la conferma
           contentFound = true;
+
+          // se mpresenti, estrae campi acf
+          if (postContent.value.acf) {
+            extraFields.value = postContent.value.acf;
+            console.log("Campi ACF trovati nella pagina:", extraFields.value);
+          }
         }
       } catch (e) {
         console.warn(`Non trovato come pagina per slug '${slug}'. Prossimo tentativo: post. Errore specifico:`, e.message); 
@@ -58,11 +66,17 @@
 
       // Recupera come Post se non trovato come Pagina
       if (!contentFound) { 
-          response = await axios.get(`${WORDPRESS_BASE_API_URL}posts?slug=${slug}`);
+          response = await axios.get(`${WORDPRESS_BASE_API_URL}posts?slug=${slug}&acf_format=standard`); // '&acf_format=standard'se presenti campi acf
           
           if (response && response.data.length > 0) {
             postContent.value = response.data[0];
             contentFound = true;
+            
+            // se mpresenti, estrae campi acf
+            if (postContent.value.acf) {
+              extraFields.value = postContent.value.acf;
+              console.log("Campi ACF trovati nel post:", extraFields.value);
+            }
           } else {
             error.value = 'Contenuto non trovato per questo slug nelle pagine o negli articoli.';
             console.warn("fetchContentBySlug: Nessun contenuto trovato per lo slug:", slug); 
@@ -78,12 +92,14 @@
       if (!contentFound) {
           error.value = error.value || 'Nessun contenuto trovato per questo slug.';
           postContent.value = null;
+          extraFields.value = null; // resetta anche i campi extra
       }
 
     } catch (err) {
       console.error(`WorkspaceContentBySlug: Errore critico durante il recupero del contenuto per lo slug ${slug}:`, err); 
       error.value = err.message || 'Errore sconosciuto durante il caricamento del contenuto.';
       postContent.value = null;
+      extraFields.value = null; //resetta anche i campi extra
     } finally {
       loading.value = false;
     }
@@ -123,6 +139,10 @@
 
       <div class="prose lg:prose-xl max-w-none" v-html="postContent.content?.rendered"></div>
 
+      <div v-if="extraFields">
+        <p><b>Campo extra:</b> {{ extraFields.test_esempio }}</p>
+      </div>
+
       <p v-if="postContent.date" class="mt-8 text-gray-600 text-sm">
         Data: {{ new Date(postContent.date).toLocaleDateString() }}
       </p>
@@ -130,6 +150,7 @@
         Tipo: {{ postContent.type === 'page' ? 'Pagina' : 'Articolo' }}
       </p>
     </div>
+
     <span v-else class="text-center text-gray-600 text-lg">Nessun contenuto da visualizzare.</span>
   </div>
 </template>

@@ -44,7 +44,7 @@
     }
   }
 
-  const articlesToShow = 6; 
+  const articlesToShow = 8; 
   const limitedArticles = computed(() => {
     return articles.value.slice(0, articlesToShow);
   });

@@ -14,6 +14,7 @@
 - [Componenti principali](#componenti-principali)
 - [Gestione delle rotte](#gestione-delle-rotte)
 - [Gestione dati e API](#gestione-dati-e-api)
+- [Gestione dei campi ACF](#gestione-ACF)
 - [Stili e UI](#stili-e-ui)
 - [Avvio e build del progetto](#avvio-e-build-del-progetto)
 - [Personalizzazione e best practice](#personalizzazione-e-best-practice)
@@ -186,6 +187,88 @@ export default router;
 
 ---
 
+## Gestione dei campi ACF
+
+Questa applicazione Vue consente di mostrare, oltre ai contenuti standard di WordPress, anche **campi personalizzati** aggiunti tramite [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/).
+Qui spieghiamo come avviene l’integrazione e come utilizzare i campi extra lato frontend.
+
+### 1. Configurazione lato WordPress
+
+- Installa il plugin **Advanced Custom Fields**.
+- Crea un gruppo di campi e aggiungi i tuoi campi personalizzati (es. `test_esempio`).
+- Nelle impostazioni del gruppo di campi, **abilita l’opzione "Show in REST API"** (fondamentale per l’esposizione dei dati).
+- Associa il gruppo di campi alle pagine/articoli desiderati.
+
+
+### 2. Recupero dei campi ACF nel frontend
+
+Nel componente `PageDetail.vue`, i dati vengono recuperati tramite la funzione `fetchContentBySlug`.
+Questa funzione effettua una richiesta alle API REST di WordPress, includendo il parametro `acf_format=standard` per assicurare la presenza dei campi ACF nella risposta.
+
+**Estratto rilevante:**
+
+```js
+response = await axios.get(`${WORDPRESS_BASE_API_URL}pages?slug=${slug}&acf_format=standard`);
+...
+if (postContent.value.acf) {
+  extraFields.value = postContent.value.acf;
+}
+```
+
+Se il contenuto non è una pagina, viene effettuata una seconda richiesta come post.
+
+### 3. Visualizzazione dei campi extra nel template
+
+Nel template del componente, i campi extra ACF vengono visualizzati solo se presenti.
+L’esempio seguente mostra come viene stampato un campo chiamato `test_esempio`:
+
+```vue
+<div v-if="extraFields">
+  <p><b>Campo extra:</b> {{ extraFields.test_esempio }}</p>
+</div>
+```
+
+**Nota:**
+Sostituisci `test_esempio` con il nome reale del campo creato in ACF.
+
+### 4. Esempio di risposta API
+
+Quando la configurazione è corretta, la risposta dell’API WordPress includerà una sezione `acf` con i valori dei campi personalizzati:
+
+```json
+{
+  "id": 42,
+  "title": { "rendered": "Titolo della pagina" },
+  "content": { "rendered": "<p>Contenuto principale</p>" },
+  "acf": {
+    "test_esempio": "Valore inserito in WordPress"
+  }
+}
+```
+
+
+### 5. Debug e suggerimenti
+
+- Se la chiave `acf` non compare nella risposta, verifica che l’opzione **Show in REST API** sia attiva nel gruppo di campi ACF.
+- Puoi aggiungere nuovi campi in WordPress senza modificare il componente Vue: sarà sufficiente aggiungere il riferimento nel template se vuoi mostrarli.
+- Il nome del campo in `extraFields` corrisponde esattamente a quello definito in ACF.
+
+---
+
+### 📌 Riferimento rapido
+
+- **Aggiunta campo in WordPress:**
+Dashboard → Custom Fields → Aggiungi nuovo → Abilita "Show in REST API"
+- **Visualizzazione nel frontend:**
+Accedi tramite `extraFields.nome_del_campo`
+
+---
+
+> ℹ️ **Per approfondire:**
+> Consulta la [documentazione ufficiale di ACF REST API](https://www.advancedcustomfields.com/resources/acf-to-rest-api/) per dettagli avanzati.
+
+---
+
 ## Stili e UI
 
 - **Tailwind CSS:**
@@ -196,30 +279,6 @@ export default router;
     - Il componente `Buttons` permette di creare facilmente pulsanti dinamici e personalizzati.
 
 ---
-
-## Avvio e Build del Progetto
-
-### **Installazione**
-
-1. Clona la repository.
-2. Installa le dipendenze:
-
-```bash
-npm install
-```
-
-3. Avvia il server di sviluppo:
-
-```bash
-npm run dev
-```
-
-4. Per build di produzione:
-
-```bash
-npm run build
-```
-
 
 ### **Dipendenze principali**
 
@@ -270,6 +329,7 @@ Dal tuo `package.json`:
 
 # Analisi Blocchi del Progetto
 
+Di seguito un'analisidei blocchi principali del progetto
 
 ---
 
