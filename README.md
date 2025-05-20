@@ -82,6 +82,8 @@ root/
 └── jsconfig.json
 
 
+
+```
 ---
 
 ## Componenti Principali
