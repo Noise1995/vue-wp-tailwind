@@ -1,90 +1,34 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-
-const WORDPRESS_MENU_API_URL = 'http://localhost:8888/cms-api-test/wp-json/wp/v2/menu-items?menus=4';
-
-const WORDPRESS_SUBDIRECTORY = '/cms-api-test';
+import { fetchMenuItems, getMenuItemUrl } from '@/api/wordpress.js';
 
 const menuItems = ref([]);
 const loadingMenu = ref(false);
 const errorMenu = ref(null);
 
-async function fetchSlugById(type, id) {
-    try {
-        const response = await axios.get(`<span class="math-inline">\{WORDPRESS\_BASE\_API\_URL\}</span>{type}/${id}`);
-        if (response.data && response.data.slug) {
-            return response.data.slug;
-        }
-    } catch (error) {
-        console.error(`Errore nel recupero dello slug per ${type} con ID ${id}:`, error);
-    }
-    return null;
-}
-
-// Funzione principale per determinare l'URL di una voce di menu
-async function getMenuItemUrl(item) {
-  // L'item ha già un URL completo 
-  if (item.url && item.url.startsWith('http')) {
-    const urlPath = new URL(item.url).pathname;
-    // se sottocartella wp sempre inclusa
-    if (urlPath.startsWith(WORDPRESS_SUBDIRECTORY)) {
-        return urlPath;
-    } else {
-        // altrimenti la prependiamo
-        return `<span class="math-inline">\{WORDPRESS\_SUBDIRECTORY\}</span>{urlPath}`;
-    }
-  }
-  // L'item è una Pagina, Articolo, Categoria, dove dobbiamo recuperare lo slug
-  else if (item.object && item.object_id) {
-      let endpoint = '';
-      if (item.object === 'page') {
-          endpoint = 'pages';
-      } else if (item.object === 'post') {
-          endpoint = 'posts';
-      }
-
-      if (endpoint) {
-          const slug = await fetchSlugById(endpoint, item.object_id);
-          const finalUrl = slug ? `<span class="math-inline">\{WORDPRESS\_SUBDIRECTORY\}/</span>{slug}/` : '#';
-          return finalUrl;
-      }
-  }
-  return '#'; // Fallback 
-}
-
-
-// Hook del ciclo di vita: Esegui la logica quando il componente è montato
 onMounted(async () => {
   loadingMenu.value = true;
   errorMenu.value = null;
   try {
-    const response = await axios.get(WORDPRESS_MENU_API_URL);
-
-    if (Array.isArray(response.data)) {
-      const resolvedMenuItems = [];
-      for (const item of response.data) {
-        const url = await getMenuItemUrl(item);
-        resolvedMenuItems.push({
-          id: item.id,
-          title: item.title.rendered,
-          url: url
-        });
-      }
-      menuItems.value = resolvedMenuItems;
-
-    } else {
-      errorMenu.value = 'Struttura dati del menu non riconosciuta o menu vuoto.';
+    const items = await fetchMenuItems(4); // Passa l'ID corretto del menu
+    const resolvedMenuItems = [];
+    for (const item of items) {
+      const url = await getMenuItemUrl(item);
+      resolvedMenuItems.push({
+        id: item.id,
+        title: item.title.rendered,
+        url: url
+      });
     }
-
-    loadingMenu.value = false;
+    menuItems.value = resolvedMenuItems;
   } catch (err) {
     console.error("Errore nel recupero del menu da WordPress:", err);
     errorMenu.value = err.message || 'Errore durante il caricamento del menu.';
+  } finally {
     loadingMenu.value = false;
   }
 });
+
 </script>
 
 <template>

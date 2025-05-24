@@ -1,10 +1,9 @@
 <script setup>
   import { ref, onMounted, watch } from 'vue';
   import { useRoute } from 'vue-router';
-  import axios from 'axios';
+  import { fetchPageBySlug, fetchPostBySlug, fetchFeaturedImage } from '@/api/wordpress.js';
 
   const route = useRoute();
-  const WORDPRESS_BASE_API_URL = 'http://localhost:8888/cms-api-test/wp-json/wp/v2/';
 
   const postContent = ref(null);
   const featuredImage = ref(null);
@@ -12,94 +11,49 @@
   const error = ref(null);
   const extraFields = ref(null);
 
-  const fetchFeaturedImage = async (mediaLink) => {
-    try {
-      if (mediaLink) {
-        const res = await axios.get(mediaLink);
-        // scelta dimensione immagine:
-        featuredImage.value = res.data.media_details?.sizes?.large?.source_url
-          || res.data.media_details?.sizes?.medium?.source_url
-          || res.data.source_url; // fallback all'originale
-      } else {
-        featuredImage.value = null;
-      }
-    } catch (e) {
-      featuredImage.value = null;
-    }
-  };
-
   const fetchContentBySlug = async (slug) => {
-
     loading.value = true;
     error.value = null;
-    postContent.value = null; 
-    extraFields.value = null; // acf
+    postContent.value = null;
+    extraFields.value = null;
 
     if (!slug) {
-      console.warn("fetchContentBySlug: Lo slug è nullo o indefinito. Non è possibile recuperare il contenuto.");
       error.value = "URL della pagina/articolo non valido.";
       loading.value = false;
       return;
     }
 
     try {
-      let response = null;
-      let contentFound = false;
+      // Prima tenta come pagina
+      let content = await fetchPageBySlug(slug);
 
-      // Recupera come pagina
-      try {
-        response = await axios.get(`${WORDPRESS_BASE_API_URL}pages?slug=${slug}&acf_format=standard`); // '&acf_format=standard'se presenti campi acf
-        if (response && response.data.length > 0) {
-          postContent.value = response.data[0];
-          console.log("fetchContentBySlug: Contenuto trovato come pagina. Titolo:", postContent.value.title?.rendered); // Utile per la conferma
-          contentFound = true;
+      // Se non trova, tenta come articolo
+      if (!content) {
+        content = await fetchPostBySlug(slug);
+      }
 
-          // se mpresenti, estrae campi acf
-          if (postContent.value.acf) {
-            extraFields.value = postContent.value.acf;
-            console.log("Campi ACF trovati nella pagina:", extraFields.value);
-          }
+      if (content) {
+        postContent.value = content;
+        if (content.acf) {
+          extraFields.value = content.acf;
         }
-      } catch (e) {
-        console.warn(`Non trovato come pagina per slug '${slug}'. Prossimo tentativo: post. Errore specifico:`, e.message); 
+        // Recupera immagine in evidenza se presente
+        if (content._links && content._links["wp:featuredmedia"]) {
+          featuredImage.value = await fetchFeaturedImage(content._links["wp:featuredmedia"][0].href);
+        } else {
+          featuredImage.value = null;
+        }
+      } else {
+        error.value = 'Contenuto non trovato per questo slug nelle pagine o negli articoli.';
+        postContent.value = null;
+        extraFields.value = null;
+        featuredImage.value = null;
       }
-
-      // Recupera come Post se non trovato come Pagina
-      if (!contentFound) { 
-          response = await axios.get(`${WORDPRESS_BASE_API_URL}posts?slug=${slug}&acf_format=standard`); // '&acf_format=standard'se presenti campi acf
-          
-          if (response && response.data.length > 0) {
-            postContent.value = response.data[0];
-            contentFound = true;
-            
-            // se mpresenti, estrae campi acf
-            if (postContent.value.acf) {
-              extraFields.value = postContent.value.acf;
-              console.log("Campi ACF trovati nel post:", extraFields.value);
-            }
-          } else {
-            error.value = 'Contenuto non trovato per questo slug nelle pagine o negli articoli.';
-            console.warn("fetchContentBySlug: Nessun contenuto trovato per lo slug:", slug); 
-          }
-      }
-
-      // Recupera immagine in evidenza se presente
-      if (postContent.value && postContent.value._links && postContent.value._links["wp:featuredmedia"]) {
-        const mediaLink = postContent.value._links["wp:featuredmedia"][0].href;
-        await fetchFeaturedImage(mediaLink);
-      }
-      // segnala errore se non trovato
-      if (!contentFound) {
-          error.value = error.value || 'Nessun contenuto trovato per questo slug.';
-          postContent.value = null;
-          extraFields.value = null; // resetta anche i campi extra
-      }
-
     } catch (err) {
-      console.error(`WorkspaceContentBySlug: Errore critico durante il recupero del contenuto per lo slug ${slug}:`, err); 
-      error.value = err.message || 'Errore sconosciuto durante il caricamento del contenuto.';
+      error.value = err.message || 'Errore durante il caricamento del contenuto.';
       postContent.value = null;
-      extraFields.value = null; //resetta anche i campi extra
+      extraFields.value = null;
+      featuredImage.value = null;
     } finally {
       loading.value = false;
     }
@@ -115,13 +69,12 @@
       if (newSlug && newSlug !== oldSlug) {
         fetchContentBySlug(newSlug);
       } else if (!newSlug && oldSlug) {
-          console.warn("watch: Nuovo slug nullo o indefinito dopo un vecchio slug valido. Svuotamento del contenuto.");
-          postContent.value = null;
-          loading.value = false;
-          error.value = "URL della pagina/articolo non valido dopo la navigazione.";
+        postContent.value = null;
+        loading.value = false;
+        error.value = "URL della pagina/articolo non valido dopo la navigazione.";
       }
     },
-    { immediate: false } 
+    { immediate: false }
   );
 </script>
 
