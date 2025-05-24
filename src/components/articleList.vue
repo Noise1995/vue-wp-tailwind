@@ -1,54 +1,31 @@
 <script setup>
   import { ref, onMounted, computed } from 'vue';
-  import axios from 'axios';
   import ArticleCard from './articleCard.vue';
+  import { fetchArticles } from '@/api/wordpress.js';
   
   const articles = ref([]);
   const loading = ref(false);
   const error = ref(null);
-
-  const WORDPRESS_API_URL = 'http://localhost:8888/cms-api-test/wp-json/wp/v2/posts';
   
   onMounted(async () => {
-    fetchArticles();
+    await loadArticles();
   });
   
-  async function fetchArticles() {
+  async function loadArticles() {
     loading.value = true;
     error.value = null;
     try {
-      const response = await axios.get(`${WORDPRESS_API_URL}?_embed`);
-      
-      articles.value = response.data.map(article => {
-        return {
-          id: article.id,
-          title: article.title.rendered,
-          description: article.excerpt.rendered || '',
-          body_markdown: article.content.rendered || '',
-          
-          cover_image: article._embedded && article._embedded['wp:featuredmedia'] && article._embedded['wp:featuredmedia'][0] ? 
-                      article._embedded['wp:featuredmedia'][0].source_url : null,
-          
-          user: article._embedded && article._embedded['author'] && article._embedded['author'][0] ? 
-                { username: article._embedded['author'][0].name } : { username: 'Autore Sconosciuto' },
-          
-          published_at: article.date,
-          
-          url: article.link
-        };
-      });
-      loading.value = false;
+      // Puoi passare page/perPage se vuoi, qui default 1/10
+      articles.value = await fetchArticles({ page: 1, perPage: 10 });
     } catch (err) {
       error.value = err.message || 'Errore durante il caricamento degli articoli da WordPress.';
+    } finally {
       loading.value = false;
     }
   }
 
   const articlesToShow = 8; 
-  const limitedArticles = computed(() => {
-    return articles.value.slice(0, articlesToShow);
-  });
-
+  const limitedArticles = computed(() => articles.value.slice(0, articlesToShow));
 </script>
   
 <template>

@@ -1,8 +1,8 @@
 <script setup>
   import { ref, onMounted, computed } from 'vue';
-  import axios from 'axios';
   import { useRoute, useRouter } from 'vue-router';
   import buttons from './buttons.vue';
+  import { fetchArticleById } from '@/api/wordpress.js';
 
   const route = useRoute();
   const router = useRouter();
@@ -12,49 +12,29 @@
   const loading = ref(true);
   const error = ref(null);
 
-  const WORDPRESS_BASE_API_URL = 'http://localhost:8888/cms-api-test/wp-json/wp/v2/posts';
+onMounted(async () => {
 
-  onMounted(async () => {
-    try {
-      const response = await axios.get(`${WORDPRESS_BASE_API_URL}/${articleId}?_embed`);
+  loading.value = true;
+  error.value = null;
 
-      const fetchedArticle = response.data;
-      if (fetchedArticle) {
-        article.value = {
+  try {
+    article.value = await fetchArticleById(articleId);
+  } catch (err) {
+    console.error("Errore nel recupero dell'articolo da WordPress:", err);
+    error.value = err.message || 'Errore durante il caricamento dell\'articolo.';
+  } finally {
+    loading.value = false;
+  }
+  
+});
 
-          id: fetchedArticle.id,
-          title: fetchedArticle.title.rendered,
-          
-          body_html: fetchedArticle.content.rendered, 
-          
-          cover_image: fetchedArticle._embedded && fetchedArticle._embedded['wp:featuredmedia'] && fetchedArticle._embedded['wp:featuredmedia'][0] ? 
-                        fetchedArticle._embedded['wp:featuredmedia'][0].source_url : null,
-          user: fetchedArticle._embedded && fetchedArticle._embedded['author'] && fetchedArticle._embedded['author'][0] ? 
-                { username: fetchedArticle._embedded['author'][0].name } : { username: 'Autore Sconosciuto' },
-          published_at: fetchedArticle.date,
-          url: fetchedArticle.link
-
-        };
-      } else {
-        error.value = 'Articolo non trovato.';
-      }
-      loading.value = false;
-    } catch (err) {
-      console.error("Errore nel recupero dell'articolo da WordPress:", err);
-      error.value = err.message || 'Errore durante il caricamento dell\'articolo.';
-      loading.value = false;
-    }
-  });
-
-  const backButton = computed(() => {
-    return [
-      {
-        id: 1,
-        label: '← Torna agli articoli',
-        action: () => router.push('/'),
-      },
-    ];
-  });
+const backButton = computed(() => [
+  {
+    id: 1,
+    label: '← Torna agli articoli',
+    action: () => router.push('/'),
+  },
+]);
 </script>
 
 <template>
