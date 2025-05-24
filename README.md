@@ -1,11 +1,3 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
-
-# si forniscimi una versione ancora piu' dettagliata
-
-Ecco una versione **ancora più dettagliata** e moderna del README, che integra tutte le best practice, esempi di codice, spiegazioni approfondite, flussi dei componenti e dettagli tecnici, mantenendo la struttura camelCase e la centralizzazione delle API.
-
----
-
 # Blog Vue.js + WordPress API
 
 **Documentazione Completa**
@@ -499,14 +491,6 @@ Assicurati che il server WordPress consenta richieste dal dominio del frontend.
 - Crea la pagina in WordPress, copia lo slug e visita `/:slug` nel frontend.
 
 ---
-
-**Per domande o suggerimenti, apri una issue o contatta il maintainer!**
-
----
-
-Se desideri ulteriori dettagli su una sezione specifica, esempi di codice avanzati, o vuoi una guida su come estendere il progetto, chiedi pure!
-
-<div style="text-align: center">⁂</div>
 
 [^1]: README.md
 
