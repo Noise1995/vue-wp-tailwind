@@ -1,67 +1,66 @@
-# test-vue-dep
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
+# si forniscimi una versione ancora piu' dettagliata
 
+Ecco una versione **ancora più dettagliata** e moderna del README, che integra tutte le best practice, esempi di codice, spiegazioni approfondite, flussi dei componenti e dettagli tecnici, mantenendo la struttura camelCase e la centralizzazione delle API.
 
 ---
 
-# Documentazione Progetto: Blog Vue.js + WordPress API
+# Blog Vue.js + WordPress API
+
+**Documentazione Completa**
+
+---
 
 ## Sommario
 
-- [Descrizione generale](#descrizione-generale)
-- [Stack tecnologico](#stack-tecnologico)
-- [Struttura del progetto](#struttura-del-progetto)
-- [Componenti principali](#componenti-principali)
-- [Gestione delle rotte](#gestione-delle-rotte)
-- [Gestione dati e API](#gestione-dati-e-api)
-- [Gestione dei campi ACF](#gestione-ACF)
+- [Descrizione Generale](#descrizione-generale)
+- [Stack Tecnologico](#stack-tecnologico)
+- [Struttura del Progetto](#struttura-del-progetto)
+- [Componenti Principali](#componenti-principali)
+- [Gestione delle Rotte](#gestione-delle-rotte)
+- [Gestione Dati e API](#gestione-dati-e-api)
+- [Gestione dei Campi ACF](#gestione-dei-campi-acf)
 - [Stili e UI](#stili-e-ui)
-- [Avvio e build del progetto](#avvio-e-build-del-progetto)
-- [Personalizzazione e best practice](#personalizzazione-e-best-practice)
+- [Avvio e Build del Progetto](#avvio-e-build-del-progetto)
+- [Personalizzazione e Best Practice](#personalizzazione-e-best-practice)
+- [Analisi Dettagliata dei Componenti](#analisi-dettagliata-dei-componenti)
+- [Esempi di Risposta delle API](#esempi-di-risposta-delle-api)
+- [Debug e Suggerimenti](#debug-e-suggerimenti)
+- [FAQ](#faq)
 
 ---
 
 ## Descrizione Generale
 
-Questo progetto è una **single-page application (SPA)** sviluppata con **Vue 3** e **Tailwind CSS** per il frontend, che si interfaccia con un **backend WordPress** tramite le sue API REST.
-L’obiettivo è fornire una piattaforma blog moderna, veloce e responsive, con contenuti dinamici gestiti da WordPress.
+Questa applicazione è una **Single Page Application (SPA)** sviluppata con **Vue 3** e **Tailwind CSS**.
+Il frontend comunica con un backend **WordPress** tramite le sue REST API, offrendo una piattaforma blog moderna, veloce e responsive, con contenuti dinamici gestiti da WordPress.
 
 ---
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
----
-
-## Stack tecnologico
+## Stack Tecnologico
 
 - **Frontend**
-    - [Vue.js 3](https://vuejs.org/) (core framework)
-    - [Vue Router](https://router.vuejs.org/) (gestione delle rotte)
-    - [Tailwind CSS](https://tailwindcss.com/) (styling)
-    - [Axios](https://axios-http.com/) (chiamate HTTP)
-    - [Vite](https://vitejs.dev/) (bundler e dev server)
+    - [Vue.js 3](https://vuejs.org/)
+    - [Vue Router](https://router.vuejs.org/)
+    - [Tailwind CSS](https://tailwindcss.com/)
+    - [Axios](https://axios-http.com/)
+    - [Vite](https://vitejs.dev/)
 - **Backend**
-    - [WordPress](https://wordpress.org/) (gestione contenuti, API REST)
+    - [WordPress](https://wordpress.org/)
+    - [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/) (per campi personalizzati)
 
 ---
 
 ## Struttura del Progetto
 
 ```
-
 root/
-├── dist/
-│   └── assets/
-│       ├── index.js
-│       └── indexs.css
-├── favicon.ico
-├── index.html
-├── node_modules/
 ├── public/
 │   └── favicon.ico
 ├── src/
+│   ├── api/
+│   │   └── wordpress.js
 │   ├── assets/
 │   │   ├── logo.svg
 │   │   └── styles.css
@@ -79,90 +78,73 @@ root/
 ├── package.json
 ├── tailwind.config.js
 ├── vite.config.js
-└── jsconfig.json
-
-
-
+└── ...
 ```
+
+
 ---
 
 ## Componenti Principali
 
-### 1. **App.vue**
+### App.vue
 
-- **Ruolo:** Layout principale dell’applicazione.
-- **Contenuto:**
-    - Includi Header e Footer.
-    - Gestisci le route: homepage (lista articoli) e altre pagine tramite `<router-view />`.
+- Layout principale: include Header, Footer e `<router-view />`.
 
 
-### 2. **Header.vue**
+### header.vue
 
-- **Ruolo:** Barra di navigazione superiore.
-- **Funzionalità:**
-    - Carica dinamicamente il menu da WordPress tramite API.
-    - Gestisce correttamente link interni/esterni e sottocartelle WordPress.
+- Barra di navigazione superiore.
+- Carica dinamicamente il menu da WordPress tramite funzioni centralizzate.
 
 
-### 3. **Footer.vue**
+### footer.vue
 
-- **Ruolo:** Footer statico visualizzato in tutte le pagine.
-
-
-### 4. **ArticleList.vue**
-
-- **Ruolo:** Mostra la lista degli articoli del blog.
-- **Funzionalità:**
-    - Recupera articoli dal backend WordPress.
-    - Gestisce loading, errori, immagine di fallback.
-    - Implementa paginazione con pulsante “Carica altri”.
+- Footer statico visualizzato in tutte le pagine.
 
 
-### 5. **ArticleCard.vue**
+### **articleList.vue**
 
-- **Ruolo:** Card per singolo articolo.
-- **Funzionalità:**
-    - Visualizza titolo, descrizione, pulsante per leggere il dettaglio.
-
-
-### 6. **ArticleDetail.vue**
-
-- **Ruolo:** Pagina di dettaglio di un articolo.
-- **Funzionalità:**
-    - Recupera un articolo tramite ID dalla route.
-    - Mostra titolo, contenuto, autore, data, pulsante per tornare alla lista.
+- Recupera articoli dal backend WordPress tramite API centralizzate.
+- Gestisce loading, errori, immagine di fallback.
+- Implementa la paginazione progressiva: mostra 8 articoli alla volta e, se presenti altri articoli, visualizza un pulsante “Carica altri” che permette di caricare progressivamente altri 8 articoli alla volta senza ricaricare la pagina.
+- Utilizza il componente `buttons.vue` per il pulsante “Carica altri”.
 
 
-### 7. **PageDetail.vue**
+### articleCard.vue
 
-- **Ruolo:** Pagina di dettaglio per pagine statiche o articoli via slug.
-- **Funzionalità:**
-    - Recupera e mostra contenuto WordPress tramite slug.
-    - Gestisce sia pagine che articoli.
+- Card riutilizzabile per singolo articolo.
 
 
-### 8. **Buttons.vue**
+### articleDetail.vue
 
-- **Ruolo:** Componente riutilizzabile per pulsanti dinamici.
-- **Funzionalità:**
-    - Riceve un array di pulsanti, ognuno con label, azione e classi personalizzabili.
+- Pagina di dettaglio di un articolo, recuperato tramite ID dalla route.
+
+
+### pageDetail.vue
+
+- Pagina di dettaglio per pagine statiche o articoli via slug.
+
+
+### buttons.vue
+
+- Componente riutilizzabile per pulsanti dinamici.
 
 ---
 
 ## Gestione delle Rotte
 
-Esempio di configurazione (in `router/index.js`):
+Esempio di configurazione (`src/router.js`):
 
 ```js
 import { createRouter, createWebHistory } from 'vue-router';
-import ArticleList from '../components/ArticleList.vue';
-import ArticleDetail from '../components/ArticleDetail.vue';
-import PageDetail from '../components/PageDetail.vue';
+import articleList from './components/articleList.vue';
+import articleDetail from './components/articleDetail.vue';
+import pageDetail from './components/pageDetail.vue';
 
 const routes = [
-  { path: '/', component: ArticleList },
-  { path: '/article/:id', component: ArticleDetail },
-  { path: '/:slug', component: PageDetail }, // Attenzione: route dinamica per pagine/articoli via slug
+  { path: '/', component: articleList },
+  { path: '/article/:id', component: articleDetail },
+  { path: '/:slug', component: pageDetail }
 ];
 
 const router = createRouter({
@@ -178,51 +160,181 @@ export default router;
 
 ## Gestione Dati e API
 
-- **Recupero dati:**
-    - Tutti i dati vengono fetchati tramite chiamate HTTP alle API REST di WordPress.
-    - Gli articoli e le pagine vengono mappati per estrarre solo i dati necessari (titolo, contenuto, immagini, autore, ecc.).
-    - Gestione di loading ed errori in tutti i componenti che fanno fetch.
-- **Immagine di fallback:**
-    - Se un articolo non ha immagine in evidenza, viene mostrata un’immagine di default (`/images/default-image.jpg`).
-- **Paginazione:**
-    - Implementata in ArticleList tramite il parametro `page` delle API WordPress e un pulsante “Carica altri”.
+Tutte le chiamate HTTP alle API di WordPress sono **centralizzate** in `src/api/wordpress.js`.
+I componenti importano solo le funzioni di fetch di cui hanno bisogno.
+
+### Esempio di funzioni in `src/api/wordpress.js`:
+
+```js
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:8888/cms-api-test/wp-json/wp/v2/';
+const WORDPRESS_SUBDIRECTORY = '/cms-api-test';
+
+// Recupera lista articoli
+export async function fetchArticles({ page = 1, perPage = 10 } = {}) {
+  try {
+    const response = await axios.get(`${BASE_URL}posts`, {
+      params: { _embed: true, page, per_page: perPage }
+    });
+    return response.data.map(article => ({
+      id: article.id,
+      title: article.title.rendered,
+      description: article.excerpt.rendered || '',
+      body_markdown: article.content.rendered || '',
+      cover_image: article._embedded?.['wp:featuredmedia']?.[^0]?.source_url || null,
+      user: article._embedded?.['author']?.[^0]?.name
+        ? { username: article._embedded['author'][^0].name }
+        : { username: 'Autore Sconosciuto' },
+      published_at: article.date,
+      url: article.link
+    }));
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Recupera articolo per ID
+export async function fetchArticleById(id) {
+  try {
+    const response = await axios.get(`${BASE_URL}posts/${id}`, { params: { _embed: true } });
+    const article = response.data;
+    return {
+      id: article.id,
+      title: article.title.rendered,
+      body_html: article.content.rendered,
+      cover_image: article._embedded?.['wp:featuredmedia']?.[^0]?.source_url || null,
+      user: article._embedded?.['author']?.[^0]?.name
+        ? { username: article._embedded['author'][^0].name }
+        : { username: 'Autore Sconosciuto' },
+      published_at: article.date,
+      url: article.link
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Recupera pagina per slug
+export async function fetchPageBySlug(slug) {
+  try {
+    const response = await axios.get(`${BASE_URL}pages`, {
+      params: { slug, acf_format: 'standard' }
+    });
+    return response.data.length > 0 ? response.data[^0] : null;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Recupera post per slug
+export async function fetchPostBySlug(slug) {
+  try {
+    const response = await axios.get(`${BASE_URL}posts`, {
+      params: { slug, acf_format: 'standard' }
+    });
+    return response.data.length > 0 ? response.data[^0] : null;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Recupera immagine in evidenza da link
+export async function fetchFeaturedImage(mediaLink) {
+  if (!mediaLink) return null;
+  try {
+    const res = await axios.get(mediaLink);
+    return (
+      res.data.media_details?.sizes?.large?.source_url ||
+      res.data.media_details?.sizes?.medium?.source_url ||
+      res.data.source_url ||
+      null
+    );
+  } catch {
+    return null;
+  }
+}
+
+// Recupera menu per ID
+export async function fetchMenuItems(menuId = 4) {
+  try {
+    const response = await axios.get(`${BASE_URL}menu-items`, {
+      params: { menus: menuId }
+    });
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Recupera slug di una risorsa WP tramite ID
+export async function fetchSlugById(type, id) {
+  try {
+    const response = await axios.get(`${BASE_URL}${type}/${id}`);
+    if (response.data && response.data.slug) {
+      return response.data.slug;
+    }
+  } catch (error) {
+    console.error(`Errore nel recupero dello slug per ${type} con ID ${id}:`, error);
+  }
+  return null;
+}
+
+// Costruisce l'URL finale per una voce di menu
+export async function getMenuItemUrl(item) {
+  if (item.url && item.url.startsWith('http')) {
+    const urlPath = new URL(item.url).pathname;
+    if (urlPath.startsWith(WORDPRESS_SUBDIRECTORY)) {
+      return urlPath;
+    } else {
+      return `${WORDPRESS_SUBDIRECTORY}${urlPath}`;
+    }
+  } else if (item.object && item.object_id) {
+    let endpoint = '';
+    if (item.object === 'page') {
+      endpoint = 'pages';
+    } else if (item.object === 'post') {
+      endpoint = 'posts';
+    }
+    if (endpoint) {
+      const slug = await fetchSlugById(endpoint, item.object_id);
+      return slug ? `${WORDPRESS_SUBDIRECTORY}/${slug}/` : '#';
+    }
+  }
+  return '#';
+}
+```
+
+**Paginazione progressiva ("Carica altri")**
+
+Il componente `articleList.vue` implementa la paginazione progressiva tramite il parametro `page` delle API WordPress.
+Vengono caricati 8 articoli per volta. Se ci sono altri articoli disponibili, viene visualizzato un pulsante **“Carica altri”** che consente di aggiungere altri 8 articoli alla lista senza ricaricare la pagina.
+Questa funzionalità migliora l’esperienza utente e ottimizza le performance della pagina.
+
+**Esempio di utilizzo nel template:**
+
+```vue
+<Buttons :buttons="loadMoreButton" buttonExtraClass="mt-8" v-if="hasMore && !loading" />
+```
+
 
 ---
 
-## Gestione dei campi ACF
-
-Questa applicazione Vue consente di mostrare, oltre ai contenuti standard di WordPress, anche **campi personalizzati** aggiunti tramite [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/).
-Qui spieghiamo come avviene l’integrazione e come utilizzare i campi extra lato frontend.
+## Gestione dei Campi ACF
 
 ### 1. Configurazione lato WordPress
 
 - Installa il plugin **Advanced Custom Fields**.
-- Crea un gruppo di campi e aggiungi i tuoi campi personalizzati (es. `test_esempio`).
-- Nelle impostazioni del gruppo di campi, **abilita l’opzione "Show in REST API"** (fondamentale per l’esposizione dei dati).
+- Crea i campi e abilita "Show in REST API".
 - Associa il gruppo di campi alle pagine/articoli desiderati.
 
 
-### 2. Recupero dei campi ACF nel frontend
+### 2. Recupero e visualizzazione
 
-Nel componente `PageDetail.vue`, i dati vengono recuperati tramite la funzione `fetchContentBySlug`.
-Questa funzione effettua una richiesta alle API REST di WordPress, includendo il parametro `acf_format=standard` per assicurare la presenza dei campi ACF nella risposta.
+- I dati ACF sono disponibili nella proprietà `acf` dell’oggetto pagina/articolo.
+- Nel template puoi accedere ai campi tramite `extraFields.nome_campo`.
 
-**Estratto rilevante:**
-
-```js
-response = await axios.get(`${WORDPRESS_BASE_API_URL}pages?slug=${slug}&acf_format=standard`);
-...
-if (postContent.value.acf) {
-  extraFields.value = postContent.value.acf;
-}
-```
-
-Se il contenuto non è una pagina, viene effettuata una seconda richiesta come post.
-
-### 3. Visualizzazione dei campi extra nel template
-
-Nel template del componente, i campi extra ACF vengono visualizzati solo se presenti.
-L’esempio seguente mostra come viene stampato un campo chiamato `test_esempio`:
+**Esempio:**
 
 ```vue
 <div v-if="extraFields">
@@ -230,17 +342,124 @@ L’esempio seguente mostra come viene stampato un campo chiamato `test_esempio`
 </div>
 ```
 
-**Nota:**
-Sostituisci `test_esempio` con il nome reale del campo creato in ACF.
 
-### 4. Esempio di risposta API
+### 3. Debug
 
-Quando la configurazione è corretta, la risposta dell’API WordPress includerà una sezione `acf` con i valori dei campi personalizzati:
+- Se la chiave `acf` non compare nella risposta, verifica che "Show in REST API" sia attivo.
+- Il nome del campo in `extraFields` corrisponde a quello definito in ACF.
+
+---
+
+## Stili e UI
+
+- Tutti i componenti sono stilizzati con **Tailwind CSS**.
+- Responsive grid per la lista articoli.
+- Uso di classi `prose` per la formattazione del contenuto HTML.
+- Componenti riutilizzabili e facilmente personalizzabili.
+
+---
+
+## Avvio e Build del Progetto
+
+```sh
+npm install           # Installa le dipendenze
+npm run dev           # Avvia il server di sviluppo
+npm run build         # Build di produzione
+```
+
+
+---
+
+## Personalizzazione e Best Practice
+
+- **Centralizza tutte le chiamate API** in `src/api/wordpress.js`.
+- **Gestisci loading e errori** a livello di componente.
+- **Utilizza variabili d’ambiente** (file `.env`) per l’URL delle API se prevedi ambienti diversi.
+- **Mantieni i componenti puliti**: nessun riferimento diretto ad axios o chiamate HTTP nei componenti.
+- **Estendi facilmente**: aggiungi nuove funzioni di fetch nel modulo API, non nei componenti.
+- **SEO e accessibilità**: imposta dinamicamente il titolo della pagina, usa attributi ARIA e ruoli per la navigazione.
+- **Performance**: usa la paginazione per non caricare troppi articoli alla volta, immagini ottimizzate.
+
+---
+
+## Analisi Dettagliata dei Componenti
+
+### articleList.vue
+
+- Carica la prima pagina di articoli da WordPress su mount.
+- Usa `fetchArticles` dal modulo API.
+- Gestisce paginazione, loading, errori e fallback immagini.
+- Mostra i dati tramite `articleCard.vue`.
+
+
+### articleDetail.vue
+
+- Recupera un articolo tramite ID dalla route.
+- Usa `fetchArticleById` dal modulo API.
+- Mostra titolo, contenuto, autore, data, pulsante per tornare alla lista.
+
+
+### pageDetail.vue
+
+- Recupera e mostra contenuto WordPress tramite slug.
+- Tenta prima come pagina, poi come post.
+- Gestisce sia pagine che articoli, inclusi campi ACF.
+
+
+### header.vue
+
+- Recupera dinamicamente il menu da WordPress tramite `fetchMenuItems` e `getMenuItemUrl`.
+- Gestisce link interni/esterni e sottocartelle WordPress.
+
+
+### buttons.vue
+
+- Riceve un array di pulsanti, ognuno con label, azione e classi personalizzabili.
+- Componente riutilizzabile per tutte le azioni utente.
+
+### **Flusso**
+
+1. **onMounted**:
+    - Carica la prima pagina di articoli da WordPress (8 articoli).
+2. **loadArticles**:
+    - Chiamata API con parametri `page` e `perPage`.
+    - Aggiunge gli articoli recuperati a quelli già presenti.
+    - Se il numero di articoli recuperati è inferiore a `perPage`, il pulsante “Carica altri” scompare.
+3. **Paginazione**:
+    - Stato `currentPage` per sapere quale pagina caricare.
+    - Il pulsante “Carica altri” incrementa la pagina e richiama la fetch.
+4. **Template**:
+    - Mostra loading, errori, messaggio per lista vuota.
+    - Griglia responsive di `ArticleCard`.
+    - Pulsante “Carica altri” se ci sono ancora articoli da mostrare
+
+---
+
+## Esempi di Risposta delle API
+
+**Articolo:**
+
+```json
+{
+  "id": 12,
+  "title": { "rendered": "Titolo articolo" },
+  "content": { "rendered": "<p>Testo...</p>" },
+  "excerpt": { "rendered": "<p>Riassunto...</p>" },
+  "date": "2024-06-01T12:00:00",
+  "link": "http://localhost:8888/cms-api-test/articolo/slug-articolo/",
+  "_embedded": {
+    "author": [{ "name": "Mario Rossi" }],
+    "wp:featuredmedia": [{ "source_url": "http://..." }]
+  }
+}
+```
+
+**Pagina con ACF:**
 
 ```json
 {
   "id": 42,
-  "title": { "rendered": "Titolo della pagina" },
+  "title": { "rendered": "Titolo pagina" },
   "content": { "rendered": "<p>Contenuto principale</p>" },
   "acf": {
     "test_esempio": "Valore inserito in WordPress"
@@ -249,322 +468,45 @@ Quando la configurazione è corretta, la risposta dell’API WordPress includer�
 ```
 
 
-### 5. Debug e suggerimenti
+---
 
-- Se la chiave `acf` non compare nella risposta, verifica che l’opzione **Show in REST API** sia attiva nel gruppo di campi ACF.
-- Puoi aggiungere nuovi campi in WordPress senza modificare il componente Vue: sarà sufficiente aggiungere il riferimento nel template se vuoi mostrarli.
-- Il nome del campo in `extraFields` corrisponde esattamente a quello definito in ACF.
+## Debug e Suggerimenti
+
+- **Menu non visualizzato?**
+Verifica che l’ID del menu sia corretto e che le API siano raggiungibili.
+- **Campi ACF mancanti?**
+Controlla che "Show in REST API" sia attivo nel gruppo di campi ACF.
+- **Immagini mancanti?**
+Usa un’immagine di fallback nel mapping dei dati.
+- **Problemi di CORS?**
+Assicurati che il server WordPress consenta richieste dal dominio del frontend.
 
 ---
 
-### 📌 Riferimento rapido
+## FAQ
 
-- **Aggiunta campo in WordPress:**
-Dashboard → Custom Fields → Aggiungi nuovo → Abilita "Show in REST API"
-- **Visualizzazione nel frontend:**
-Accedi tramite `extraFields.nome_del_campo`
+**Come aggiungo un nuovo campo ACF e lo visualizzo?**
 
----
+1. Crea il campo in WordPress e abilita "Show in REST API".
+2. Nel template Vue, accedi a `extraFields.nome_campo`.
 
-> ℹ️ **Per approfondire:**
-> Consulta la [documentazione ufficiale di ACF REST API](https://www.advancedcustomfields.com/resources/acf-to-rest-api/) per dettagli avanzati.
+**Come cambio l’URL delle API?**
 
----
+- Modifica la costante `BASE_URL` in `src/api/wordpress.js`, oppure usa una variabile d’ambiente.
 
-## Stili e UI
+**Come aggiungo una nuova pagina statica?**
 
-- **Tailwind CSS:**
-    - Tutti i componenti sono stilizzati con classi utility di Tailwind per una UI moderna e responsive.
-    - Uso di classi come `prose` per il contenuto HTML degli articoli.
-    - Responsive grid per la lista articoli.
-- **Componenti riutilizzabili:**
-    - Il componente `Buttons` permette di creare facilmente pulsanti dinamici e personalizzati.
+- Crea la pagina in WordPress, copia lo slug e visita `/:slug` nel frontend.
 
 ---
 
-### **Dipendenze principali**
-
-Dal tuo `package.json`:
-
-```json
-"dependencies": {
-  "axios": "^1.8.4",
-  "vue": "^3.5.13",
-  "vue-router": "^4.5.0"
-},
-"devDependencies": {
-  "@tailwindcss/vite": "^4.1.6",
-  "@vitejs/plugin-vue": "^5.2.3",
-  "tailwindcss": "^4.1.6",
-  "vite": "^6.2.4",
-  "vite-plugin-vue-devtools": "^7.7.2"
-}
-```
-
+**Per domande o suggerimenti, apri una issue o contatta il maintainer!**
 
 ---
 
-## Personalizzazione e Best Practice
+Se desideri ulteriori dettagli su una sezione specifica, esempi di codice avanzati, o vuoi una guida su come estendere il progetto, chiedi pure!
 
-- **URL API WordPress:**
-    - Utilizza variabili d’ambiente (`.env`) per gestire facilmente gli endpoint tra sviluppo e produzione.
-- **Gestione degli errori:**
-    - Tutti i componenti che fanno fetch gestiscono loading ed errori in modo chiaro per l’utente.
-- **SEO e accessibilità:**
-    - Puoi migliorare il SEO impostando dinamicamente il titolo della pagina.
-    - Aggiungi attributi ARIA e ruoli ai componenti di navigazione.
-- **Ottimizzazione performance:**
-    - Usa la paginazione per non caricare troppi articoli alla volta.
-    - Usa immagini ottimizzate.
+<div style="text-align: center">⁂</div>
 
----
+[^1]: README.md
 
----
-
-## Note Finali
-
-- Questo progetto è **modulare** e facilmente estendibile.
-- Ogni componente è pensato per essere riutilizzabile e facilmente personalizzabile.
-- La separazione tra frontend (Vue) e backend (WordPress) ti permette di scalare e aggiornare indipendentemente le due parti.
-
----
-
-# Analisi Blocchi del Progetto
-
-Di seguito un'analisidei blocchi principali del progetto
-
----
-
-## 1. **App.vue**
-
-### **Responsabilità**
-
-- Definisce il layout principale dell’app.
-- Incapsula Header, Footer e la visualizzazione delle pagine tramite il router.
-
-
-### **Flusso**
-
-- All’avvio, imposta il titolo della pagina.
-- Mostra sempre Header e Footer.
-- Nel `<main>`, visualizza:
-    - `ArticleList` se la route è `/`
-    - Altrimenti, il componente corrispondente tramite `<router-view />`.
-
-
-### **Punti chiave**
-
-- Gestione centralizzata del layout.
-- Utilizzo di Tailwind per struttura responsive.
-- Routing dinamico.
-
----
-
-## 2. **Header.vue**
-
-### **Responsabilità**
-
-- Visualizza la barra di navigazione superiore.
-- Recupera dinamicamente il menu da WordPress.
-
-
-### **Flusso**
-
-1. **onMounted**:
-    - Esegue una chiamata API per ottenere le voci di menu.
-    - Per ogni voce, determina l’URL corretto (interno/esterno, con sottocartella).
-    - Gestisce loading e errori.
-2. **Funzioni di supporto**:
-    - `fetchSlugById`: recupera lo slug di una risorsa WP tramite ID.
-    - `getMenuItemUrl`: costruisce l’URL finale per ogni voce di menu.
-3. **Template**:
-    - Mostra "Home" sempre.
-    - Mostra i link del menu, gestendo separatori, loading e errori.
-
-### **Punti chiave**
-
-- Gestione asincrona e robusta dei dati di menu.
-- Compatibilità con WordPress in sottocartella.
-- Navigazione accessibile e dinamica.
-
----
-
-## 3. **Footer.vue**
-
-### **Responsabilità**
-
-- Visualizza un footer statico in fondo a tutte le pagine.
-
-
-### **Flusso**
-
-- Non ha logica JS.
-- Template semplice con stile Tailwind.
-
-
-### **Punti chiave**
-
-- Statico, sempre presente, pronto per eventuali estensioni (es. copyright).
-
----
-
-## 4. **ArticleList.vue**
-
-### **Responsabilità**
-
-- Mostra la lista degli articoli del blog.
-- Gestisce il caricamento, la paginazione e gli errori.
-
-
-### **Flusso**
-
-1. **onMounted**:
-    - Carica la prima pagina di articoli da WordPress.
-2. **fetchArticles**:
-    - Chiamata API con parametri `page` e `per_page`.
-    - Mappa i dati per estrarre solo quelli necessari (id, titolo, descrizione, cover, autore, data, url).
-    - Se manca la cover image, usa un’immagine di fallback.
-    - Gestisce loading ed errori.
-3. **Paginazione**:
-    - Stato `currentPage` e `totalArticles` per sapere quanti articoli mostrare e se mostrare il pulsante “Carica altri”.
-    - Il pulsante incrementa la pagina e richiama la fetch.
-4. **Template**:
-    - Mostra loading, errori, messaggio per lista vuota.
-    - Griglia responsive di `ArticleCard`.
-    - Pulsante “Carica altri” se ci sono ancora articoli da mostrare.
-
-### **Punti chiave**
-
-- Fetch robusto con fallback immagini.
-- Paginazione efficiente.
-- UI responsive e user-friendly.
-
----
-
-## 5. **ArticleCard.vue**
-
-### **Responsabilità**
-
-- Visualizza una card per ogni articolo.
-
-
-### **Flusso**
-
-- Riceve l’oggetto `article` come prop.
-- Mostra titolo e descrizione (HTML).
-- Usa il componente `Buttons` per mostrare pulsanti dinamici (es. “Leggi l’articolo”).
-- Il pulsante usa il router per navigare al dettaglio dell’articolo.
-
-
-### **Punti chiave**
-
-- Separazione tra presentazione e logica di navigazione.
-- Facilmente estendibile (immagini, autore, data, badge, ecc.).
-
----
-
-## 6. **Buttons.vue**
-
-### **Responsabilità**
-
-- Componente riutilizzabile per la visualizzazione di uno o più pulsanti dinamici.
-
-
-### **Flusso**
-
-- Riceve un array di pulsanti via prop, ognuno con label, azione e classi opzionali.
-- Calcola le classi CSS per ogni pulsante combinando base, extra e classi specifiche.
-- Al click, esegue la funzione `action` associata al pulsante.
-
-
-### **Punti chiave**
-
-- Altamente personalizzabile (stili, larghezza, classi).
-- Validazione rigorosa dei dati in ingresso.
-
----
-
-## 7. **PageDetail.vue**
-
-### **Responsabilità**
-
-- Visualizza il dettaglio di una pagina o di un articolo WordPress in base allo slug nella route.
-
-
-### **Flusso**
-
-1. **onMounted**:
-    - Richiama `fetchContentBySlug` con lo slug attuale.
-2. **fetchContentBySlug**:
-    - Tenta prima di recuperare una pagina (`pages?slug=...`).
-    - Se non trova nulla, tenta come articolo (`posts?slug=...`).
-    - Aggiorna gli stati loading, error, postContent.
-3. **watch**:
-    - Se lo slug nella route cambia, richiama la fetch.
-4. **Template**:
-    - Mostra loading, error, contenuto (titolo, corpo, data, tipo), o messaggio di assenza.
-
-### **Punti chiave**
-
-- Gestione slug universale (pagine e articoli).
-- UI chiara per tutti gli stati (caricamento, errore, successo, vuoto).
-
----
-
-## 8. **ArticleDetail.vue**
-
-### **Responsabilità**
-
-- Visualizza il dettaglio di un singolo articolo tramite ID dalla route.
-
-
-### **Flusso**
-
-1. **onMounted**:
-    - Recupera l’articolo tramite ID (`posts/:id?_embed`).
-    - Mappa i dati (id, titolo, contenuto, cover, autore, data, url).
-    - Gestisce loading ed errori.
-2. **Pulsante di ritorno**:
-    - Usa il componente `Buttons` per un pulsante “← Torna agli articoli” che riporta alla home.
-3. **Template**:
-    - Mostra loading, error, contenuto (titolo, corpo), e pulsante di ritorno.
-
-### **Punti chiave**
-
-- Dettaglio articolo completo, pronto per estensioni (commenti, autore, data, ecc.).
-- Navigazione user-friendly.
-
----
-
-## 9. **Struttura delle rotte**
-
-- `/` → ArticleList
-- `/article/:id` → ArticleDetail
-- `/:slug` → PageDetail (gestione pagine/articoli via slug)
-
----
-
-## 10. **Gestione dati e API**
-
-- Tutti i dati vengono fetchati tramite chiamate HTTP alle API REST di WordPress.
-- Gestione loading ed errori in ogni componente che fa fetch.
-- Uso di fallback per immagini mancanti.
-- Paginazione tramite parametri API.
-
----
-
-## 11. **Stili e UI**
-
-- Tailwind CSS per tutta la UI.
-- Responsive grid e layout flessibile.
-- Componenti riutilizzabili e facilmente personalizzabili.
-
----
-
-## 12. **Avvio e build**
-
-- `npm install` per installare le dipendenze.
-- `npm run dev` per avviare il server di sviluppo.
-- `npm run build` per la build di produzione.
-
----
