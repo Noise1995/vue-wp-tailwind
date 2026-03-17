@@ -136,14 +136,28 @@ export async function fetchSlugById(type, id) {
 
 // Costruisce l'URL finale per una voce di menu
 export async function getMenuItemUrl(item) {
+  // Gestione link assoluti (http/https)
   if (item.url && item.url.startsWith('http')) {
     const urlPath = new URL(item.url).pathname;
-    if (urlPath.startsWith(WORDPRESS_SUBDIRECTORY)) {
-      return urlPath;
-    } else {
-      return `${WORDPRESS_SUBDIRECTORY}${urlPath}`;
+    if (typeof WORDPRESS_SUBDIRECTORY === 'string' && WORDPRESS_SUBDIRECTORY.length > 0) {
+      // Se il percorso inizia già con la sottocartella, restituiscilo così com'è
+      if (urlPath.startsWith(WORDPRESS_SUBDIRECTORY)) {
+        return urlPath;
+      } else {
+        // Altrimenti aggiungi la sottocartella
+        return `${WORDPRESS_SUBDIRECTORY}${urlPath}`;
+      }
     }
-  } else if (item.object && item.object_id) {
+    return urlPath;
+  }
+
+  // Gestione link relativi (iniziano con '/')
+  if (item.url && item.url.startsWith('/')) {
+    return item.url;
+  }
+
+  // Gestione oggetti WordPress (pagine, articoli)
+  if (item.object && item.object_id) {
     let endpoint = '';
     if (item.object === 'page') {
       endpoint = 'pages';
@@ -152,8 +166,13 @@ export async function getMenuItemUrl(item) {
     }
     if (endpoint) {
       const slug = await fetchSlugById(endpoint, item.object_id);
-      return slug ? `${WORDPRESS_SUBDIRECTORY}/${slug}/` : '#';
+      if (typeof WORDPRESS_SUBDIRECTORY === 'string' && WORDPRESS_SUBDIRECTORY.length > 0) {
+        return slug ? `${WORDPRESS_SUBDIRECTORY}/${slug}/` : '#';
+      }
+      return slug ? `/${slug}/` : '#';
     }
   }
+
+  // Fallback
   return '#';
 }
